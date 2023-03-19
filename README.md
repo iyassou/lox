@@ -1,7 +1,7 @@
 # lox
 Reading through "Crafting Interpreters"
 
-**Now**: finished chapter 6, "Parsing Expressions".
+**Now**: finished chapter 7, "Evaluating Expressions".
 
 **Additional features implemented**:
 - C-style `/* ... */` block comments (chapter 4)

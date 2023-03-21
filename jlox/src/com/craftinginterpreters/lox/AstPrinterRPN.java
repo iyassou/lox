@@ -6,6 +6,11 @@ class AstPrinterRPN implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        return "(" + expr.name.lexeme + " |" + expr.value.accept(this) + "| <-)";
+    }
+
+    @Override
     public String visitBinaryExpr(Expr.Binary expr) {
         StringBuilder builder = new StringBuilder();
         builder.append("(").append(expr.left.accept(this));
@@ -24,6 +29,11 @@ class AstPrinterRPN implements Expr.Visitor<String> {
     public String visitLiteralExpr(Expr.Literal expr) {
         if (expr.value == null) return "nil";
         return expr.value.toString();
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        return "(var " + expr.name.lexeme + ")";
     }
 
     @Override
@@ -50,7 +60,18 @@ class AstPrinterRPN implements Expr.Visitor<String> {
             new Token(TokenType.STAR, "*", null, 1),
             new Expr.Grouping(new Expr.Literal(45.67))
         );
+        Expr assignment = new Expr.Assign(
+            new Token(TokenType.IDENTIFIER, "a", null, 2),
+            new Expr.Literal("global a")
+        );
+        Expr variable = new Expr.Variable(
+            new Token(TokenType.IDENTIFIER, "b", null, 3)
+        );
+
+        AstPrinterRPN astPrinter = new AstPrinterRPN();
         
-        System.out.println(new AstPrinterRPN().print(expression));
+        System.out.println(astPrinter.print(expression));
+        System.out.println(astPrinter.print(assignment));
+        System.out.println(astPrinter.print(variable));
     }
 }

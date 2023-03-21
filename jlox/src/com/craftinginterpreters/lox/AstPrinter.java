@@ -27,6 +27,11 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+    }
+
+    @Override
     public String visitVariableExpr(Expr.Variable expr) {
         return "(var " + expr.name.lexeme + ")";
     }
@@ -75,11 +80,17 @@ class AstPrinter implements Expr.Visitor<String> {
         Expr variable = new Expr.Variable(
             new Token(TokenType.IDENTIFIER, "b", null, 3)
         );
+        Expr _and = new Expr.Logical(
+            new Expr.Literal(5),
+            new Token(TokenType.AND, "and", null, 4),
+            new Expr.Literal(6)
+        );
 
         AstPrinter astPrinter = new AstPrinter();
         
         System.out.println(astPrinter.print(expression));
         System.out.println(astPrinter.print(assignment));
         System.out.println(astPrinter.print(variable));
+        System.out.println(astPrinter.print(_and));
     }
 }

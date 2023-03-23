@@ -15,4 +15,4 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [x] Division by zero produces a runtime error (chapter 7)
 - [ ] REPL expression support (chapter 8)
 - [x] Accessing uninitialised variables is a runtime error (chapter 8) (_hmmm_...)
-- [ ] `break` statement support (chapter 9)
+- [x] `break` statement support (chapter 9)

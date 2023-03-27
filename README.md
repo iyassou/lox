@@ -1,7 +1,7 @@
 # lox
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 9, "Control Flow".
+**Now**: finished chapter 10, "Functions".
 
 ## `jlox` implementation
 
@@ -16,3 +16,4 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] REPL expression support (chapter 8)
 - [x] Accessing uninitialised variables is a runtime error (chapter 8) (_hmmm_...)
 - [x] `break` statement support (chapter 9)
+- [ ] Anonymous function syntax support (chapter 10)

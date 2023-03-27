@@ -8,7 +8,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 **Additional features**:
 - [x] C-style `/* ... */` block comments (chapter 4)
 - [x] Reverse Polish notation syntax tree printer (chapter 5)
-- [x] Comma expressions (chapter 6)
+- [ ] Comma expressions (chapter 6)
 - [x] C-style ternary operator `?:` (chapter 6)
 - [x] Error production for binary operators missing their LHOperand (chapter 6)
 - [x] Type coercion to string for + operator if either operand is a string (chapter 7)

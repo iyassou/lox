@@ -239,9 +239,9 @@ class Parser {
         // >Comma operator support.
         // NOTE:    no longer supported as this implementation interferes with
         //          extracting function arguments.
-        while (match(COMMA)) {
-            expr = equality();
-        }
+        // while (match(COMMA)) {
+        //     expr = equality();
+        // }
         // <Comma operator support.
         
         // >Ternary operator support.

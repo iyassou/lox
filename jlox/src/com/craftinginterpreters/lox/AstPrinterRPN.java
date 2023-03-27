@@ -21,6 +21,22 @@ class AstPrinterRPN implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitCallExpr(Expr.Call expr) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(");
+        for (int i = 0; i < expr.arguments.size(); i++) {
+            builder.append(expr.arguments.get(i).accept(this));
+            if (i != expr.arguments.size() - 1) {
+                builder.append(", ");
+            }
+        }
+        builder.append(": <call> ").append(expr.callee.accept(this));
+        builder.append(")");
+
+        return builder.toString();
+    }
+
+    @Override
     public String visitGroupingExpr(Expr.Grouping expr) {
         return "(group " + expr.expression.accept(this) + ")";
     }

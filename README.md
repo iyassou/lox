@@ -17,4 +17,4 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [x] Accessing uninitialised variables is a runtime error (chapter 8) (_hmmm_...)
 - [x] `break` statement support (chapter 9)
 - [ ] Anonymous function syntax support (chapter 10)
-- [ ] Extend the resolver to report an unused local variable as an error (chapter 11)
+- [x] Extend the resolver to report an unused local variable as an error (chapter 11)

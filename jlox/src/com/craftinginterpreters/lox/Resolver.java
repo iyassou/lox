@@ -8,6 +8,7 @@ import java.util.Stack;
 class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Interpreter interpreter;
     private final Stack<Map<String, Boolean>> scopes = new Stack<>();
+    private final Stack<Map<Token, Boolean>> usedVariables = new Stack<>();
     private FunctionType currentFunction = FunctionType.NONE;
     private boolean insideWhileLoop = false;
 
@@ -83,6 +84,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             resolve(stmt.initializer);
         }
         define(stmt.name);
+        usedVariables.peek().put(stmt.name, false);
         return null;
     }
 
@@ -159,6 +161,9 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         }
 
         resolveLocal(expr, expr.name);
+        if (!usedVariables.isEmpty()) {
+            usedVariables.peek().put(expr.name, true);
+        }
         return null;
     }
 
@@ -192,10 +197,17 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     private void beginScope() {
         scopes.push(new HashMap<String, Boolean>());
+        usedVariables.push(new HashMap<Token, Boolean>());
     }
 
     private void endScope() {
         scopes.pop();
+        Map<Token, Boolean> usedVars = usedVariables.pop();
+        for (Map.Entry<Token, Boolean> entry : usedVars.entrySet()) {
+            if (!entry.getValue()) {
+                Lox.error(entry.getKey(), "Variable '" + entry.getKey().lexeme + "' declared but never used.");
+            }
+        }
     }
 
     private void declare(Token name) {
@@ -211,6 +223,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private void define(Token name) {
         if (scopes.isEmpty()) return;
         scopes.peek().put(name.lexeme, true);
+        usedVariables.peek().put(name, false);
     }
 
     private void resolveLocal(Expr expr, Token name) {

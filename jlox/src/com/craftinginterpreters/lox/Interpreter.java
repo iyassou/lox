@@ -33,9 +33,6 @@ class Interpreter implements    Expr.Visitor<Object>,
             }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
-        } catch (BreakError breakError) {
-            RuntimeError error = new RuntimeError(breakError.token, "Encountered break statement outside of loop.");
-            Lox.runtimeError(error);
         }
     }
 
@@ -68,6 +65,11 @@ class Interpreter implements    Expr.Visitor<Object>,
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
         return null;
+    }
+    
+    @Override
+    public Void visitBreakStmt(Stmt.Break stmt) {
+        throw new Break(stmt.keyword);
     }
 
     @Override
@@ -124,16 +126,11 @@ class Interpreter implements    Expr.Visitor<Object>,
         while (isTruthy(evaluate(stmt.condition))) {
             try {
                 execute(stmt.body);
-            } catch (BreakError error) {
+            } catch (Break error) {
                 break;
             }
         }
         return null;
-    }
-
-    @Override
-    public Void visitBreakStmt(Stmt.Break stmt) {
-        throw new BreakError(stmt.keyword, "Encountered break statement.");
     }
 
     @Override

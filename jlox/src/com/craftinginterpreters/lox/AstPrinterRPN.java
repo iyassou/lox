@@ -1,5 +1,8 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class AstPrinterRPN implements Expr.Visitor<String> {
     String print(Expr expr) {
         return expr.accept(this);
@@ -7,7 +10,7 @@ class AstPrinterRPN implements Expr.Visitor<String> {
 
     @Override
     public String visitAssignExpr(Expr.Assign expr) {
-        return "(" + expr.name.lexeme + " |" + expr.value.accept(this) + "| <-)";
+        return "(" + expr.name.lexeme + " " + expr.value.accept(this) + " <-)";
     }
 
     @Override
@@ -30,10 +33,28 @@ class AstPrinterRPN implements Expr.Visitor<String> {
                 builder.append(", ");
             }
         }
-        builder.append(": <call> ").append(expr.callee.accept(this));
-        builder.append(")");
+        if (!expr.arguments.isEmpty()) {
+            builder.append(" : ");
+        }
+        builder.append(expr.callee.accept(this)).append(" CALL)");
 
         return builder.toString();
+    }
+
+    @Override
+    public String visitConditionalExpr(Expr.Conditional expr) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("(cond ").append(expr.predicate.accept(this)).append("? ");
+        builder.append(expr.iftrue.accept(this)).append(" : ");
+        builder.append(expr.iffalse.accept(this)).append(")");
+        
+        return builder.toString();
+    }
+
+    @Override
+    public String visitGetExpr(Expr.Get expr) {
+        return "(" + expr.object.accept(this) + " " + expr.name.lexeme + " " + "GET)";
     }
 
     @Override
@@ -53,6 +74,21 @@ class AstPrinterRPN implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitSetExpr(Expr.Set expr) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(").append(expr.object.accept(this));
+        builder.append(" ").append(expr.name.lexeme);
+        builder.append(" ").append(expr.value.accept(this));
+        builder.append(" SET)");
+        return builder.toString();
+    }
+
+    @Override
+    public String visitThisExpr(Expr.This expr) {
+        return "(" + expr.keyword.lexeme + ")";
+    }
+
+    @Override
     public String visitVariableExpr(Expr.Variable expr) {
         return "(var " + expr.name.lexeme + ")";
     }
@@ -60,17 +96,6 @@ class AstPrinterRPN implements Expr.Visitor<String> {
     @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return "(" + expr.right.accept(this) + " " + expr.operator.lexeme + ")";
-    }
-
-    @Override
-    public String visitConditionalExpr(Expr.Conditional expr) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append("(cond ").append(expr.predicate.accept(this)).append("? ");
-        builder.append(expr.iftrue.accept(this)).append(" : ");
-        builder.append(expr.iffalse.accept(this)).append(")");
-        
-        return builder.toString();
     }
 
     public static void main(String[] args) {
@@ -93,6 +118,42 @@ class AstPrinterRPN implements Expr.Visitor<String> {
             new Token(TokenType.AND, "and", null, 4),
             new Expr.Literal(6)
         );
+        Expr object = new Expr.Variable(
+            new Token(TokenType.IDENTIFIER, "programmer", null, 5)
+        );
+        Expr get = new Expr.Get(
+            object,
+            new Token(TokenType.IDENTIFIER, "name", "Iyassou", 6)
+        );
+        Expr set = new Expr.Set(
+            object,
+            new Token(TokenType.IDENTIFIER, "age", null, 7),
+            new Expr.Literal(21)
+        );
+        Expr tthis = new Expr.This(
+            new Token(TokenType.THIS, "this", null, 8)
+        );
+        Expr cond = new Expr.Conditional(
+            new Expr.Binary(
+                new Expr.Literal(5),
+                new Token(TokenType.GREATER, ">", null, 9),
+                new Expr.Literal(6)),
+            new Expr.Literal(5),
+            new Expr.Literal(6)
+        );
+        List<Expr> arguments = new ArrayList<>();
+        arguments.add(expression);
+        arguments.add(new Expr.Literal(true));
+        Expr callNoArgs = new Expr.Call(
+            object,
+            new Token(TokenType.LEFT_PAREN, "(", null, 10),
+            new ArrayList<>()
+        );
+        Expr callArgs = new Expr.Call(
+            object,
+            new Token(TokenType.LEFT_PAREN, "(", null, 11),
+            arguments
+        );
 
         AstPrinterRPN astPrinter = new AstPrinterRPN();
         
@@ -100,5 +161,11 @@ class AstPrinterRPN implements Expr.Visitor<String> {
         System.out.println(astPrinter.print(assignment));
         System.out.println(astPrinter.print(variable));
         System.out.println(astPrinter.print(_and));
+        System.out.println(astPrinter.print(get));
+        System.out.println(astPrinter.print(set));
+        System.out.println(astPrinter.print(tthis));
+        System.out.println(astPrinter.print(cond));
+        System.out.println(astPrinter.print(callNoArgs));
+        System.out.println(astPrinter.print(callArgs));
     }
 }

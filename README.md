@@ -1,7 +1,7 @@
 # lox
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 12, "Classes".
+**Now**: finished chapter 13, "Inheritance".
 
 ## `jlox` implementation
 

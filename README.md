@@ -1,7 +1,7 @@
 # lox
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 11, "Resolving and Binding".
+**Now**: finished chapter 12, "Classes".
 
 ## `jlox` implementation
 
@@ -19,3 +19,5 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] Anonymous function syntax support (chapter 10)
 - [x] Extend the resolver to report an unused local variable as an error (chapter 11)
 - [ ] Environment array representation (chapter 11)
+- [ ] Class methods (chapter 12)
+- [ ] Getter methods (chapter 12)

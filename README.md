@@ -1,7 +1,14 @@
 # lox
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 13, "Inheritance".
+**Now**: finished chapter 14, "Chunks of Bytecode".
+
+## `clox` implementation
+
+**Additional features**:
+- [ ] Run-length encoding of chunk line information (chapter 14)
+- [ ] `OP_CONSTANT_LONG` opcode with 24-bit operand (chapter 14)
+
 
 ## `jlox` implementation
 

@@ -1,14 +1,15 @@
 # lox
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 14, "Chunks of Bytecode".
+**Now**: finished chapter 15, "A Virtual Machine".
 
 ## `clox` implementation
 
 **Additional features**:
 - [x] Run-length encoding of chunk line information (chapter 14)
 - [ ] `OP_CONSTANT_LONG` opcode with 24-bit operand (chapter 14)
-
+- [ ] Dynamically-grown VM stack (chapter 15)
+- [ ] Optimise `OP_NEGATE` (chapter 15)
 
 ## `jlox` implementation
 

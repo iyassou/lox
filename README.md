@@ -9,7 +9,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [x] Run-length encoding of chunk line information (chapter 14)
 - [ ] `OP_CONSTANT_LONG` opcode with 24-bit operand (chapter 14)
 - [ ] Dynamically-grown VM stack (chapter 15)
-- [ ] Optimise `OP_NEGATE` (chapter 15)
+- [x] Optimise `OP_NEGATE` (chapter 15)
 
 ## `jlox` implementation
 

@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 16, "Scanning on Demand".
+**Now**: finished chapter 17, "Compiling Expressions".
 
 ## `clox` implementation
 

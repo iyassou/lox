@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 17, "Compiling Expressions".
+**Now**: finished chapter 18, "Types of Values".
 
 ## `clox` implementation
 

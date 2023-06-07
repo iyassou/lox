@@ -12,7 +12,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] `OP_CONSTANT_LONG` opcode with 24-bit operand (chapter 14)
 - [ ] Dynamically-grown VM stack (chapter 15)
 - [X] Optimise `OP_NEGATE` (chapter 15)
-- [ ] `ObjString` single allocation using flexible array member (chapter 19)
+- [X] `ObjString` single allocation using flexible array member (chapter 19)
 - [ ] `ObjString` payload ownership distinction to reduce memory usage (chapter 19)
 
 ## `jlox` implementation

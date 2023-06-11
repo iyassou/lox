@@ -56,6 +56,18 @@ int addConstant(Chunk* chunk, Value value) {
     return chunk->constants.count - 1;
 }
 
+int findConstant(Chunk* chunk, Value value) {
+    // Looks for a value inside of a chunk's value array.
+    // Returns the index if found and -1 otherwise.
+    for (int i = 0; i < chunk->constants.count; i++) {
+        Value other = chunk->constants.values[i];
+        if (valuesEqual(value, other)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int getLine(Chunk* chunk, int index) {
     // chunk->lines is an array of paired numbers, where the first
     // number represents the count and the second number represents

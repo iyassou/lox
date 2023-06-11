@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 19, "Strings".
+**Now**: finished chapter 20, "Hash Tables".
 
 ## `clox` implementation
 
@@ -14,6 +14,8 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [X] Optimise `OP_NEGATE` (chapter 15)
 - [X] `ObjString` single allocation using flexible array member (chapter 19)
 - [ ] `ObjString` payload ownership distinction to reduce memory usage (chapter 19)
+- [ ] Literal (`true, false, nil`) and numerical hash table keys (chapter 20)
+- [ ] Hash table benchmarking (chapter 20)
 
 ## `jlox` implementation
 

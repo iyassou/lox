@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 20, "Hash Tables".
+**Now**: finished chapter 21, "Global Variables".
 
 ## `clox` implementation
 
@@ -16,6 +16,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] `ObjString` payload ownership distinction to reduce memory usage (chapter 19)
 - [ ] Literal (`true, false, nil`) and numerical hash table keys (chapter 20)
 - [ ] Hash table benchmarking (chapter 20)
+- [ ] Optimise global variable constant table usage (chapter 21)
 
 ## `jlox` implementation
 

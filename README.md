@@ -17,7 +17,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] Literal (`true, false, nil`) and numerical hash table keys (chapter 20)
 - [ ] Hash table benchmarking (chapter 20)
 - [X] Optimise global variable constant table usage (chapter 21)
-- [ ] Single-assignment variables using the `const` keyword (chapter 22)
+- [X] Single-assignment variables using the `const` keyword (chapter 22)
 - [ ] Support >256 local variables in the same scope (chapter 22)
 
 ## `jlox` implementation

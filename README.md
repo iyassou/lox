@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 24, "Calls and Functions".
+**Now**: finished chapter 25, "Closures".
 
 ## `clox` implementation
 
@@ -23,6 +23,8 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] `continue` statement (chapter 23)
 - [ ] Native function arity checking (chapter 24)
 - [ ] Native functions report runtime errors (chapter 24)
+- [ ] Only wrap functions that need upvalues in `ObjClosure` (chapter 25)
+- [ ] Create a new variable for each loop iteration (chapter 25)
 
 ## `jlox` implementation
 

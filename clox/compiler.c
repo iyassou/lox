@@ -65,9 +65,6 @@ typedef struct Compiler {
     int localCount;
     Upvalue upvalues[UINT8_COUNT];
     int scopeDepth;
-    char** constants;
-    int constantCount;
-    int constantCapacity;
 } Compiler;
 
 Parser parser;
@@ -199,9 +196,6 @@ static void initCompiler(Compiler* compiler, FunctionType type) {
     compiler->localCount = 0;
     compiler->scopeDepth = 0;
     compiler->function = newFunction();
-    compiler->constants = NULL;
-    compiler->constantCount = 0;
-    compiler->constantCapacity = 0;
     current = compiler;
     if (type != TYPE_SCRIPT) {
         current->function->name = copyString(parser.previous.start,
@@ -225,16 +219,6 @@ static ObjFunction* endCompiler() {
             ? function->name->chars : "<script>");
     }
 #endif
-    // Free each dynamically allocated string.
-    for (int i = 0; i < current->constantCount; i++) {
-        FREE_ARRAY(char, current->constants[i], 1 + strlen(current->constants[i]));
-    }
-    // Free the array of dynamically allocated char pointers.
-    FREE_ARRAY(char*, current->constants, current->constantCapacity);
-    // Put meaningful values in.
-    current->constantCount = 0;
-    current->constantCapacity = 0;
-    current->constants = NULL;
 
     current = current->enclosing;
     return function;
@@ -336,31 +320,7 @@ static void addLocal(Token name) {
     local->isCaptured = false;
 }
 
-static bool isConstVariable(Token* var) {
-    for (int i = 0; i < current->constantCount; i++) {
-        if (memcmp(var->start, current->constants[i], var->length) == 0)
-            return true;
-    }
-    return false;
-}
-
-static void addConstVariable() {
-    // Grow array if needed.
-    if (current->constantCapacity < current->constantCount + 1) {
-        int oldCapacity = current->constantCapacity;
-        current->constantCapacity = GROW_CAPACITY(oldCapacity);
-        current->constants = GROW_ARRAY(char*, current->constants, oldCapacity, current->constantCapacity);
-    }
-    // Add new entry.
-    Token* var = &parser.previous;
-    current->constants[current->constantCount++] = ALLOCATE(char, 1 + var->length);
-    char* slot = current->constants[current->constantCount - 1];
-    memcpy(slot, var->start, var->length);
-    slot[var->length] = '\0';
-}
-
-static void declareVariable(bool isConst) {
-    if (isConst) addConstVariable();
+static void declareVariable() {
     if (current->scopeDepth == 0) return;
 
     Token* name = &parser.previous;
@@ -378,10 +338,10 @@ static void declareVariable(bool isConst) {
     addLocal(*name);
 }
 
-static uint8_t parseVariable(const char* errorMessage, bool isConst) {
+static uint8_t parseVariable(const char* errorMessage) {
     consume(TOKEN_IDENTIFIER, errorMessage);
 
-    declareVariable(isConst);
+    declareVariable();
     if (current->scopeDepth > 0) return 0;
 
     return identifierConstant(&parser.previous);
@@ -501,10 +461,6 @@ static void namedVariable(Token name, bool canAssign) {
     }
 
     if (canAssign && match(TOKEN_EQUAL)) {
-        if (isConstVariable(&name)) {
-            error("Cannot reassign variable declared using const.");
-            return;
-        }
         expression();
         emitBytes(setOp, (uint8_t)arg);
     } else {
@@ -555,7 +511,6 @@ ParseRule rules[] = {
     [TOKEN_NUMBER]          =   {number,    NULL,   PREC_NONE},
     [TOKEN_AND]             =   {NULL,      and_,   PREC_AND},
     [TOKEN_CLASS]           =   {NULL,      NULL,   PREC_NONE},
-    [TOKEN_CONST]           =   {NULL,      NULL,   PREC_NONE},
     [TOKEN_ELSE]            =   {NULL,      NULL,   PREC_NONE},
     [TOKEN_FALSE]           =   {literal,   NULL,   PREC_NONE},
     [TOKEN_FOR]             =   {NULL,      NULL,   PREC_NONE},
@@ -624,7 +579,7 @@ static void function(FunctionType type) {
             if (current->function->arity > 255) {
                 errorAtCurrent("Can't have more than 255 parameters.");
             }
-            uint8_t constant = parseVariable("Expect parameter name.", false);
+            uint8_t constant = parseVariable("Expect parameter name.");
             defineVariable(constant);
         } while (match(TOKEN_COMMA));
     }
@@ -642,29 +597,21 @@ static void function(FunctionType type) {
 }
 
 static void funDeclaration() {
-    uint8_t global = parseVariable("Expect function name.", false);
+    uint8_t global = parseVariable("Expect function name.");
     markInitialized();
     function(TYPE_FUNCTION);
     defineVariable(global);
 }
 
 static void varDeclaration() {
-    bool isConst = parser.previous.type == TOKEN_CONST;
-    uint8_t global = parseVariable("Expect variable name.", isConst);
+    uint8_t global = parseVariable("Expect variable name.");
 
-    bool implicitNil = false;
     if (match(TOKEN_EQUAL)) {
         expression();
     } else {
-        implicitNil = true;
         emitByte(OP_NIL);
     }
     consume(TOKEN_SEMICOLON, "Expect ';' after variable declaration.");
-
-    if (isConst && implicitNil) {
-        error("Cannot implicitly assign constant to nil.");
-        return;
-    }
 
     defineVariable(global);
 }
@@ -680,7 +627,7 @@ static void forStatement() {
     consume(TOKEN_LEFT_PAREN, "Expect '(' after 'for'.");
     if (match(TOKEN_SEMICOLON)) {
         // No initializer.
-    } else if (match(TOKEN_VAR) || match(TOKEN_CONST)) {
+    } else if (match(TOKEN_VAR)) {
         varDeclaration();
     } else {
         expressionStatement();
@@ -780,7 +727,6 @@ static void synchronize() {
         if (parser.previous.type == TOKEN_SEMICOLON) return;
         switch (parser.current.type) {
             case TOKEN_CLASS:
-            case TOKEN_CONST:
             case TOKEN_FUN:
             case TOKEN_VAR:
             case TOKEN_FOR:
@@ -801,7 +747,7 @@ static void synchronize() {
 static void declaration() {
     if (match(TOKEN_FUN)) {
         funDeclaration();
-    } else if (match(TOKEN_VAR) || match(TOKEN_CONST)) {
+    } else if (match(TOKEN_VAR)) {
         varDeclaration();
     } else {
         statement();

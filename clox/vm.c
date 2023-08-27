@@ -12,10 +12,6 @@
 
 VM vm;
 
-static Value clockNative(int argCount, Value* args) {
-    return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
-}
-
 static void resetStack() {
     vm.stackTop = vm.stack;
     vm.frameCount = 0;
@@ -44,6 +40,14 @@ static void runtimeError(const char* format, ...) {
     resetStack();
 }
 
+static Value clockNative(int argCount, Value* args) {
+    if (argCount != 0) {
+        runtimeError("clock() expects no arguments, got %d.", argCount);
+        return NIL_VAL;
+    }
+    return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
+}
+
 static Value getfieldNative(int argCount, Value* args) {
     if (argCount != 2) {
         runtimeError("Expected 2 arguments, received %d.", argCount);
@@ -70,6 +74,39 @@ static Value getfieldNative(int argCount, Value* args) {
     return NIL_VAL;
 }
 
+static Value removefieldNative(int argCount, Value* args) {
+    if (argCount != 2) {
+        runtimeError("Expected 2 arguments, received %d.", argCount);
+        return NIL_VAL;
+    }
+    if (!IS_INSTANCE(args[0])) {
+        runtimeError("First argument must be an instance.");
+        return NIL_VAL;
+    }
+    if (!IS_STRING(args[1])) {
+        runtimeError("Second argument must be a string.");
+        return NIL_VAL;
+    }
+
+    ObjInstance* instance = AS_INSTANCE(args[0]);
+    ObjString* name = AS_STRING(args[1]);
+
+    Value value;
+    if (!tableGet(&instance->fields, name, &value)) {
+        runtimeError("Undefined property '%s'.", name->chars);
+        return NIL_VAL;
+    }
+
+    if (!tableDelete(&instance->fields, name)) {
+        runtimeError(
+            "Unexpected error occurred removing field '%s' from '%s' instance.",
+            name->chars, instance->klass->name->chars
+        );
+        return NIL_VAL;
+    }
+    return value;
+}
+
 static void defineNative(const char* name, NativeFn function) {
     push(OBJ_VAL(copyString(name, (int)strlen(name))));
     push(OBJ_VAL(newNative(function)));
@@ -93,6 +130,7 @@ void initVM() {
 
     defineNative("clock", clockNative);
     defineNative("getfield", getfieldNative);
+    defineNative("removefield", removefieldNative);
 }
 
 void freeVM() {

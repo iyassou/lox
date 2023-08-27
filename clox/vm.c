@@ -44,6 +44,32 @@ static void runtimeError(const char* format, ...) {
     resetStack();
 }
 
+static Value getfieldNative(int argCount, Value* args) {
+    if (argCount != 2) {
+        runtimeError("Expected 2 arguments, received %d.", argCount);
+        return NIL_VAL;
+    }
+    if (!IS_INSTANCE(args[0])) {
+        runtimeError("First argument must be an instance.");
+        return NIL_VAL;
+    }
+    if (!IS_STRING(args[1])) {
+        runtimeError("Second argument must be a string.");
+        return NIL_VAL;
+    }
+
+    ObjInstance* instance = AS_INSTANCE(args[0]);
+    ObjString* name = AS_STRING(args[1]);
+
+    Value value;
+    if (tableGet(&instance->fields, name, &value)) {
+        return value;
+    }
+
+    runtimeError("Undefined property '%s'.", name->chars);
+    return NIL_VAL;
+}
+
 static void defineNative(const char* name, NativeFn function) {
     push(OBJ_VAL(copyString(name, (int)strlen(name))));
     push(OBJ_VAL(newNative(function)));
@@ -66,6 +92,7 @@ void initVM() {
     initTable(&vm.strings);
 
     defineNative("clock", clockNative);
+    defineNative("getfield", getfieldNative);
 }
 
 void freeVM() {
@@ -119,6 +146,7 @@ static bool callValue(Value callee, int argCount) {
             case OBJ_NATIVE: {
                 NativeFn native = AS_NATIVE(callee);
                 Value result = native(argCount, vm.stackTop - argCount);
+                if (IS_NIL(result)) return false;
                 vm.stackTop -= argCount + 1;
                 push(result);
                 return true;

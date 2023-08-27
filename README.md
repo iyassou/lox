@@ -21,12 +21,12 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] Support >256 local variables in the same scope (chapter 22)
 - [ ] `switch` statement (with neither fallthrough nor `break`) (chapter 23)
 - [ ] `continue` statement (chapter 23)
-- [ ] Native function arity checking (chapter 24)
-- [ ] Native functions report runtime errors (chapter 24)
+- [X] Native function arity checking (chapter 24)
+- [X] Native functions report runtime errors (chapter 24)
 - [ ] Only wrap functions that need upvalues in `ObjClosure` (chapter 25)
 - [ ] Create a new variable for each loop iteration (chapter 25)
 - [X] Access instance fields with the `getfield` native function (chapter 26)
-- [ ] Remove instance fields with the `removefield` native function (chapter 26)
+- [X] Remove instance fields with the `removefield` native function (chapter 26)
 
 ## `jlox` implementation
 

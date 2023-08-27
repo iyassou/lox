@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 25, "Closures".
+**Now**: finished chapter 26, "Garbage Collection".
 
 ## `clox` implementation
 

@@ -25,7 +25,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [ ] Native functions report runtime errors (chapter 24)
 - [ ] Only wrap functions that need upvalues in `ObjClosure` (chapter 25)
 - [ ] Create a new variable for each loop iteration (chapter 25)
-- [ ] Access instance fields with the `getfield` native function (chapter 26)
+- [X] Access instance fields with the `getfield` native function (chapter 26)
 - [ ] Remove instance fields with the `removefield` native function (chapter 26)
 
 ## `jlox` implementation

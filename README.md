@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 27, "Classes and Instances".
+**Now**: finished chapter 28, "Methods and Initializers".
 
 ## `clox` implementation
 
@@ -25,8 +25,9 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [X] Native functions report runtime errors (chapter 24)
 - [ ] Only wrap functions that need upvalues in `ObjClosure` (chapter 25)
 - [ ] Create a new variable for each loop iteration (chapter 25)
-- [X] Access instance fields with the `getfield` native function (chapter 26)
-- [X] Remove instance fields with the `removefield` native function (chapter 26)
+- [X] Access instance fields with the `getfield` native function (chapter 27)
+- [X] Remove instance fields with the `removefield` native function (chapter 27)
+- [ ] Speed up calling a class' initialiser method (chapter 28)
 
 ## `jlox` implementation
 

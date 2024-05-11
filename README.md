@@ -2,7 +2,7 @@
 
 Reading through "Crafting Interpreters" by Robert Nystrom.
 
-**Now**: finished chapter 28, "Methods and Initializers".
+**Now**: finished chapter 29, "Superclasses".
 
 ## `clox` implementation
 
@@ -28,6 +28,7 @@ Reading through "Crafting Interpreters" by Robert Nystrom.
 - [X] Access instance fields with the `getfield` native function (chapter 27)
 - [X] Remove instance fields with the `removefield` native function (chapter 27)
 - [ ] Speed up calling a class' initialiser method (chapter 28)
+- [ ] Implement the BETA language's approach to method overriding (chapter 29)
 
 ## `jlox` implementation
 
